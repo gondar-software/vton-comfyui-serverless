@@ -1,0 +1,157 @@
+{
+    "2": {
+      "inputs": {
+        "mask_grow": 25,
+        "mixed_precision": "fp32",
+        "seed": 491519531766508,
+        "steps": 25,
+        "cfg": 2.9,
+        "image": [
+          "3",
+          0
+        ],
+        "mask": [
+          "22",
+          0
+        ],
+        "refer_image": [
+          "4",
+          0
+        ]
+      },
+      "class_type": "CatVTONWrapper",
+      "_meta": {
+        "title": "CatVTON Wrapper"
+      }
+    },
+    "3": {
+      "inputs": {
+        "image": "source.jpg"
+      },
+      "class_type": "LoadImage",
+      "_meta": {
+        "title": "Load Person and Mask the area here"
+      }
+    },
+    "4": {
+      "inputs": {
+        "image": "garment.jpg"
+      },
+      "class_type": "LoadImage",
+      "_meta": {
+        "title": "Load Garment Here"
+      }
+    },
+    "17": {
+      "inputs": {
+        "string": "shirts"
+      },
+      "class_type": "StringConstant",
+      "_meta": {
+        "title": "String Constant"
+      }
+    },
+    "18": {
+      "inputs": {
+        "model_name": "sam_vit_h_4b8939.pth",
+        "device_mode": "Prefer GPU"
+      },
+      "class_type": "SAMLoader",
+      "_meta": {
+        "title": "SAMLoader (Impact)"
+      }
+    },
+    "19": {
+      "inputs": {
+        "model_name": "GroundingDINO_SwinB (938MB)"
+      },
+      "class_type": "GroundingDinoModelLoader (segment anything)",
+      "_meta": {
+        "title": "GroundingDinoModelLoader (segment anything)"
+      }
+    },
+    "20": {
+      "inputs": {
+        "prompt": [
+          "17",
+          0
+        ],
+        "threshold": 0.3,
+        "sam_model": [
+          "18",
+          0
+        ],
+        "grounding_dino_model": [
+          "19",
+          0
+        ],
+        "image": [
+          "3",
+          0
+        ]
+      },
+      "class_type": "GroundingDinoSAMSegment (segment anything)",
+      "_meta": {
+        "title": "GroundingDinoSAMSegment (segment anything)"
+      }
+    },
+    "21": {
+      "inputs": {
+        "expand": 40,
+        "incremental_expandrate": 0,
+        "tapered_corners": true,
+        "flip_input": false,
+        "blur_radius": 0,
+        "lerp_alpha": 1,
+        "decay_factor": 1,
+        "fill_holes": true,
+        "mask": [
+          "20",
+          1
+        ]
+      },
+      "class_type": "GrowMaskWithBlur",
+      "_meta": {
+        "title": "Grow Mask With Blur"
+      }
+    },
+    "22": {
+      "inputs": {
+        "min": 0,
+        "max": 1,
+        "mask": [
+          "21",
+          0
+        ]
+      },
+      "class_type": "RemapMaskRange",
+      "_meta": {
+        "title": "Remap Mask Range"
+      }
+    },
+    "23": {
+      "inputs": {
+        "mask": [
+          "22",
+          0
+        ]
+      },
+      "class_type": "LayerMask: MaskPreview",
+      "_meta": {
+        "title": "LayerMask: MaskPreview"
+      }
+    },
+    "24": {
+      "inputs": {
+        "filename_prefix": "ComfyUI",
+        "images": [
+          "2",
+          0
+        ]
+      },
+      "class_type": "SaveImage",
+      "_meta": {
+        "title": "Save Image"
+      }
+    }
+  }
